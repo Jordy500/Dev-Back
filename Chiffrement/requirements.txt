@@ -1,5 +1,8 @@
+numpy
+random
+pygame
 pycryptodome
 cryptography
 cryptography
 simple-crypt
-import random
+pygame
