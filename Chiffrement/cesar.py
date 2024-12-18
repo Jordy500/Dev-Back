@@ -39,7 +39,7 @@ def bruteforce_cipher(message):
 def cesar_uncipher(crypted_message, key):
 	return cesar_cipher(crypted_message, -key)
 
-crypted_message = cesar("salut les bgs aujourd'hui on va corriger l'exercice", 13)
+crypted_message = cesar("Je recherche une Alternance", 13)
 print(crypted_message)
 
 def brute_force_cesar_cipher(crypted_message):
