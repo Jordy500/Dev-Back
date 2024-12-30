@@ -1,73 +1,139 @@
+"""
+This script implements a simple Mastermind game using Pygame. The player has to guess a secret code consisting of 4 digits (0-9) within a limited number of attempts. The game provides hints after each guess indicating how many digits are correctly placed and how many are correct but misplaced.
+Functions:
+- generate_hint(secret, guess): Generates a hint based on the player's guess compared to the secret code.
+- draw(): Renders the game screen, including the player's guesses, buttons, and hints.
+Game Variables:
+- secret_code: The randomly generated secret code.
+- player_input: The current input from the player.
+- max_attempts: The maximum number of attempts allowed.
+- active_cell: The currently active cell for input.
+- attempts: A list of all the player's guesses and corresponding hints.
+- game_over: A flag indicating whether the game is over.
+- hint_message: A message providing feedback to the player.
+Pygame Elements:
+- screen: The game window.
+- buttons: Rectangles representing the number buttons for input.
+- colors: Predefined colors used in the game.
+- fonts: Predefined fonts used for rendering text.
+"""
 import random
+import pygame
+import sys
+
+pygame.init()
+
+screen_width, screen_height = 900, 800
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Welcome to the Mastermind game!")
+
+# colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+GRAY = (200, 200, 200)
+HIGHLIGHT = (255, 204, 0)
+
+# fonts
+font = pygame.font.Font(None, 50)
+small_font = pygame.font.Font(None, 35)
+
+# game variables
+secret_code = [random.randint(0, 9) for _ in range(4)]
+player_input = ["_", "_", "_", "_"]
+max_attempts = 5
+active_cell = 0
+attempts = []
+max_attempts = 10
+game_over = False
+hint_message = ""
+      
+# bouton for choosing the number
+buttons = [
+    pygame.Rect(50 + i * 80, 700, 60, 50) for i in range(10)
+]
 
 def generate_hint(secret, guess):
-       hint = ""
-       correct_position = sum(s == g for s, g in zip(secret, guess))
-       correct_number = sum(min(secret.count(n), guess.count(n)) for n in set(guess)) - correct_position
-       
-       hint += "*" * correct_position + "-" * correct_number
-       return hint
+    correct_position = sum(s == g for s, g in zip(secret, guess))
+    correct_number = sum(min(secret.count(n), guess.count(n)) for n in set(guess)) - correct_position
+    return f"{correct_position} bien placé(s), {correct_number} mal placé(s)"
 
-def validate_numbers(guess):
-       return guess.isdigit() and len(guess) == 4
+def draw():
+    screen.fill(WHITE)
 
-def player_turn(player_num, secret, max_attempts=5):
-       attempts = 0
-       while attempts < max_attempts:
-           guess = input(f"Player {player_num}, entrez votre supposition: ")
-           if not validate_numbers(guess):
-               print("Entrée invalide. Veuillez saisir 4 chiffres.")
-               continue
-           
-           attempts += 1
-           
-           if guess == secret:
-               print(f"Player {player_num} a deviné la combinaison de chiffres dans {attempts} tentatives!")
-               return attempts
-           else:
-               hint = generate_hint(secret, guess)
-               print(f"veuillez donner un indice: {hint}")
-       
-       print(f"Player {player_num} je n'ai pas trouvé la combinaison de chiffres après {max_attempts} tentatives.")
-       print(f"Perdu la combinaison de numéros secrets était: {secret}")
-       return max_attempts
-
-def get_secret_number(player_num):
-    while True:
-        secret = input(f"Player {player_num}, entrer votre numéro secret à 4 chiffres: ")
-        if secret.isdigit():
-            return secret
-        else:
-            print("Entrée invalide. Veuillez saisir des chiffrés.")
-
-def main():
-    print("Welcome to the Mastermind game!")
-    
-    while True:
-        secret1 = get_secret_number(1)
-    
-        print("Player 2, A vous de commencez à deviner le numéro du joueur 1.")
-        attempts_player2 = player_turn(2, secret1)
-    
-        secret2 = get_secret_number(2)
-    
-        print("Player 1, commencez à deviner le numéro du joueur 2.")
-        attempts_player1 = player_turn(1, secret2)
+    # draw guesses
+    for i, guess in enumerate(attempts):
+         y = 50 + i * 60
+         for j, num in enumerate(guess["guess"]):
+            pygame.draw.rect(screen, RED, (50 + j * 80, y, 60, 50))
+            text = font.render(str(num), True, BLACK)
+            screen.blit(text, (60 + j * 80, y + 5))
     
 
-        attempts_player1 = player_turn(1, secret1)
-        attempts_player2 = player_turn(2, secret2)
-    
-        if attempts_player1 < attempts_player2:
-             print("Player 1 gagne et est couronné Mastermind!")
-        elif attempts_player2 < attempts_player1:
-             print("Player 2 gagne et est couronné Mastermind!")
-        else:
-             print("C'est une égalité!")
-        
-        play_again = input("Voulez-vous jouer un autre tour? (yes/no): ").strip().lower()
-        if play_again != 'yes':
+    y = 50 + len(attempts) * 60
+    for j in range(4):
+        color = HIGHLIGHT if j == active_cell else WHITE
+        pygame.draw.rect(screen, color, (50 + j * 80, y, 60, 50))
+        text = font.render(str(player_input[j]), True, BLACK)
+        screen.blit(text, (60 + j * 80, y + 5))
+
+    # draw buttons
+    for i, button in enumerate(buttons):
+        pygame.draw.rect(screen, WHITE, button)
+        text = font.render(str(i), True, BLACK)
+        screen.blit(text, (button.x + 15, button.y + 5))
+
+    # Afficher les informations de l'indice
+    if attempts:
+        hint_text = small_font.render(attempts[-1]["hint"], True, GREEN)
+        screen.blit(hint_text, (400, y + 10))
+
+    if game_over:
+        game_over_text = font.render("Game Over!", True, RED)
+        screen.blit(game_over_text, (screen_width // 2 - 100, screen_height - 100))
+        secret_text = small_font.render(f"Code secret : {''.join(map(str, secret_code))}", True, BLACK)
+        screen.blit(secret_text, (screen_width // 2 - 100, screen_height - 60))
+
+    pygame.display.flip()
+
+
+running = True
+while running:
+    draw()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
             break
+        
 
-if __name__ == "__main__":
-    main()
+        elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+            for i, button in enumerate(buttons):
+                if button.collidepoint(event.pos):
+                    player_input[active_cell] = i
+                    active_cell = (active_cell + 1) % 4
+                    break
+
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN and not game_over:
+                if "_" in player_input:
+                    hint_message = "Complétez votre ligne !"
+                else:
+                    guess = list(map(int, player_input))
+                    hint = generate_hint(secret_code, guess)
+                    attempts.append({"guess": player_input.copy(), "hint": hint})
+                    player_input = ["_", "_", "_", "_"]
+                    active_cell = 0
+
+                    if guess == secret_code:
+                        hint_message = "Félicitations, vous avez gagné !"
+                        game_over = True
+                    elif len(attempts) >= max_attempts:
+                        game_over = True
+
+pygame.quit()
+sys.exit()
+
+
+
