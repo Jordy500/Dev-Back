@@ -71,20 +71,6 @@ def compute_next_frame(frame):
     # Étape 2 : Pour chacun des éléments, calculez le nombre de voisins.
     # On fait appelle à la fonction (compute_number_neighbors)
 
-        for i in range(1, paded_frame.shape[0] - 1):
-             for j in range(1, paded_frame.shape[1] - 1):
-                number_neighbors = compute_number_neighbors(paded_frame, i, j)
-                if paded_frame[i][j] == 1:
-                    if number_neighbors < 2 or number_neighbors > 3:
-                        frame[i - 1][j - 1] = 0
-                    else:
-                        frame[i - 1][j - 1] = 1
-                else:
-                    if number_neighbors == 3:
-                        frame[i - 1][j - 1] = 1
-    
-                        frame = compute_next_frame(frame)
-
 
     # Étape 3 : Pour chacun des éléments faire les tests (état de l'élément et son nombre de voisin) afin de voir
     # si il y a des modifications à faire.
