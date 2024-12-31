@@ -4,7 +4,6 @@ import time
 
 # Initialisation de la frame (matrice) avec des 0 et des 1
 # 0 pour une cellule morte et 1 pour une cellule vivante
-# Vous pouvez changer les valeurs pour tester le script
 frame = numpy.array([[0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0, 0],
@@ -14,8 +13,7 @@ frame = numpy.array([[0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0, 0]])
 
 
-# Cette fonction prend en entrée la matrice avec bordure et
-# renvoie le nombre de cellules voisines vivantes.
+# Cette fonction prend en entrée la matrice avec bordure et renvoie le nombre de cellules voisines vivantes.
 def compute_number_neighbors(paded_frame, index_line, index_column):
 
     number_neighbors = 0
