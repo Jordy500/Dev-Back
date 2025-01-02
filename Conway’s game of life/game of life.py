@@ -101,7 +101,25 @@ def play():
             y = w * c
 
 
-
+            if 0 < x < int(width - c) and 0 < y < int(height - c):
+                compt_viv = 0
+                if dico_case[x - c, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x - c, y] == 1:
+                    compt_viv += 1
+                if dico_case[x - c, y + c] == 1:
+                    compt_viv += 1
+                if dico_case[x, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x, y + c] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y + c] == 1:
+                    compt_viv += 1
+                dico_etat[x, y] = compt_viv
             if x == 0 and y == 0:
                 compt_viv = 0
                 if dico_case[x, y + c] == 1:
@@ -220,7 +238,6 @@ def play():
     if flag > 0:
         fentest.after(vitesse, play)
 
-
 def redessiner():
     can1.delete(ALL)
     damier()
@@ -245,10 +262,7 @@ def redessiner():
         t += 1
 
 
-
-
-
-
+        
 height = 800
 width = 800
 
