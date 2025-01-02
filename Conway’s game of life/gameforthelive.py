@@ -1,26 +1,23 @@
 from tkinter import *
 
-
-# create the grid
 def damier():
     ligne_vert()
     ligne_hor()
 
-# vertical line
 def ligne_vert():
     c_x = 0
     while c_x != width:
         can1.create_line(c_x, 0, c_x, height, width=1, fill='black')
         c_x += c
 
-# horizontal line
+
 def ligne_hor():
     c_y = 0
     while c_y != height:
         can1.create_line(0, c_y, width, c_y, width=1, fill='black')
         c_y += c
 
-# left click
+
 def click_gauche(
         event):
     x = event.x - (event.x % c)
@@ -28,20 +25,20 @@ def click_gauche(
     can1.create_rectangle(x, y, x + c, y + c, fill='black')
     dico_case[x, y] = 1
 
-# right click
+
 def click_droit(event):
     x = event.x - (event.x % c)
     y = event.y - (event.y % c)
     can1.create_rectangle(x, y, x + c, y + c, fill='white')
     dico_case[x, y] = 0
 
-# change the speed of the game
+
 def change_vit(event):
     global vitesse
     vitesse = int(eval(entree.get()))
     print(vitesse)
 
-# create the canon
+
 def canon():
     dico_case[0 * c, 5 * c] = 1
     dico_case[0 * c, 6 * c] = 1
@@ -62,28 +59,239 @@ def canon():
     dico_case[16 * c, 5 * c] = 1
     dico_case[16 * c, 6 * c] = 1
     dico_case[16 * c, 7 * c] = 1
-root = Tk()
+    dico_case[17 * c, 6 * c] = 1
+    dico_case[20 * c, 3 * c] = 1
+    dico_case[20 * c, 4 * c] = 1
+    dico_case[20 * c, 5 * c] = 1
+    dico_case[21 * c, 3 * c] = 1
+    dico_case[21 * c, 4 * c] = 1
+    dico_case[21 * c, 5 * c] = 1
+    dico_case[22 * c, 2 * c] = 1
+    dico_case[22 * c, 6 * c] = 1
+    dico_case[24 * c, 1 * c] = 1
+    dico_case[24 * c, 2 * c] = 1
+    dico_case[24 * c, 6 * c] = 1
+    dico_case[24 * c, 7 * c] = 1
+    dico_case[34 * c, 3 * c] = 1
+    dico_case[34 * c, 4 * c] = 1
+    dico_case[35 * c, 3 * c] = 1
+    dico_case[35 * c, 4 * c] = 1
+    go()
 
-# create the window
-root.title('Jeu de la vie')
-width = 700
-height = 700
-c = 10
-vitesse = 100
-can1 = Canvas(root, width=width, height=height, bg='white')
-can1.pack(side=LEFT)
-dico_case = {}
 
-# create the grid
+def go():
+    global flag
+    if flag == 0:
+        flag = 1
+        play()
+
+
+def stop():
+    global flag
+    flag = 0
+
+
+def play():
+    global flag, vitesse
+    v = 0
+    while v != width / c:
+        w = 0
+        while w != height / c:
+            x = v * c
+            y = w * c
+
+
+
+            if x == 0 and y == 0:
+                compt_viv = 0
+                if dico_case[x, y + c] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y + c] == 1:
+                    compt_viv += 1
+                dico_etat[x, y] = compt_viv
+            elif x == 0 and y == int(height - c):
+                compt_viv = 0
+                if dico_case[x, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y] == 1:
+                    compt_viv += 1
+                dico_etat[x, y] = compt_viv
+            elif x == int(width - c) and y == 0:
+                compt_viv = 0
+                if dico_case[x - c, y] == 1:
+                    compt_viv += 1
+                if dico_case[x - c, y + c] == 1:
+                    compt_viv += 1
+                if dico_case[x, y + c] == 1:
+                    compt_viv += 1
+                dico_etat[x, y] = compt_viv
+            elif x == int(width - c) and y == int(height - c):
+                compt_viv = 0
+                if dico_case[x - c, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x - c, y] == 1:
+                    compt_viv += 1
+                if dico_case[x, y - c] == 1:
+                    compt_viv += 1
+                dico_etat[x, y] = compt_viv
+
+
+            elif x == 0 and 0 < y < int(height - c):
+                compt_viv = 0
+                if dico_case[x, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x, y + c] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y + c] == 1:
+                    compt_viv += 1
+                dico_etat[x, y] = compt_viv
+            elif x == int(width - c) and 0 < y < int(height - c):
+                compt_viv = 0
+                if dico_case[x - c, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x - c, y] == 1:
+                    compt_viv += 1
+                if dico_case[x - c, y + c] == 1:
+                    compt_viv += 1
+                if dico_case[x, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x, y + c] == 1:
+                    compt_viv += 1
+                dico_etat[x, y] = compt_viv
+            elif 0 < x < int(width - c) and y == 0:
+                compt_viv = 0
+                if dico_case[x - c, y] == 1:
+                    compt_viv += 1
+                if dico_case[x - c, y + c] == 1:
+                    compt_viv += 1
+                if dico_case[x, y + c] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y + c] == 1:
+                    compt_viv += 1
+                dico_etat[x, y] = compt_viv
+            elif 0 < x < int(width - c) and y == int(height - c):
+                compt_viv = 0
+                if dico_case[x - c, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x - c, y] == 1:
+                    compt_viv += 1
+                if dico_case[x, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y] == 1:
+                    compt_viv += 1
+                dico_etat[x, y] = compt_viv
+
+
+            else:
+                compt_viv = 0
+                if dico_case[x - c, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x - c, y] == 1:
+                    compt_viv += 1
+                if dico_case[x - c, y + c] == 1:
+                    compt_viv += 1
+                if dico_case[x, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x, y + c] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y - c] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y] == 1:
+                    compt_viv += 1
+                if dico_case[x + c, y + c] == 1:
+                    compt_viv += 1
+                dico_etat[x, y] = compt_viv
+
+            w += 1
+        v += 1
+    redessiner()
+    if flag > 0:
+        fentest.after(vitesse, play)
+
+
+def redessiner():
+    can1.delete(ALL)
+    damier()
+    t = 0
+    while t != width / c:
+        u = 0
+        while u != height / c:
+            x = t * c
+            y = u * c
+            if dico_etat[x, y] == 3:
+                dico_case[x, y] = 1
+                can1.create_rectangle(x, y, x + c, y + c, fill='black')
+            elif dico_etat[x, y] == 2:
+                if dico_case[x, y] == 1:
+                    can1.create_rectangle(x, y, x + c, y + c, fill='black')
+                else:
+                    can1.create_rectangle(x, y, x + c, y + c, fill='white')
+            elif dico_etat[x, y] < 2 or dico_etat[x, y] > 3:
+                dico_case[x, y] = 0
+                can1.create_rectangle(x, y, x + c, y + c, fill='white')
+            u += 1
+        t += 1
+
+
+
+
+
+
+height = 800
+width = 800
+
+
+c = 40
+
+vitesse = 90
+
+flag = 0
+dico_etat = {(i * c, j * c): 0 for i in range(width // c) for j in range(height // c)}
+dico_case = {(i * c, j * c): 0 for i in range(width // c) for j in range(height // c)}
+i = 0
+while i != width / c:
+    j = 0
+    while j != height / c:
+        x = i * c
+        y = j * c
+        dico_case[x, y] = 0
+        j += 1
+    i += 1
+
+
+fentest = Tk()
+
+can1 = Canvas(fentest, width=width, height=height, bg='white')
+can1.bind("<Button-1>", click_gauche)
+can1.bind("<Button-3>", click_droit)
+can1.pack(side=TOP, padx=5, pady=5)
+
 damier()
-can1.bind('<Button-1>', click_gauche)
-can1.bind('<Button-3>', click_droit)
-entree = Entry(root)
-entree.pack()
-entree.bind('<Return>', change_vit)
 
-# create the canon
-canon()
-root.mainloop()
+b1 = Button(fentest, text='Go!', command=go)
+b2 = Button(fentest, text='Stop', command=stop)
+b1.pack(side=LEFT, padx=3, pady=3)
+b2.pack(side=LEFT, padx=3, pady=3)
+b3 = Button(fentest, text='Canon planeur', command=canon)
+b3.pack(side=LEFT, padx=3, pady=3)
 
+entree = Entry(fentest)
+entree.bind("<Return>", change_vit)
+entree.pack(side=RIGHT)
+chaine = Label(fentest)
+chaine.configure(text="Attente entre chaque etape (ms) :")
+chaine.pack(side=RIGHT)
 
+fentest.mainloop()

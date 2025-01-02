@@ -97,4 +97,3 @@ while True:
 
 # Étape 6 : Arrêtez le script en appuyant sur ctrl + c
 
-
